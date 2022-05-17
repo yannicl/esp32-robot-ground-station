@@ -68,6 +68,10 @@ while not done:
             done = True # Flag that we are done so we exit this loop.
         elif event.type == pygame.JOYBUTTONDOWN:
             print("Joystick button pressed.")
+            if (event.button == 4 or event.button == 6):
+                commander.onGearShiftDown()
+            if (event.button == 5 or event.button == 7):
+                commander.onGearShiftUp()
         elif event.type == pygame.JOYBUTTONUP:
             print("Joystick button released.")
 
@@ -144,7 +148,8 @@ while not done:
 
         textPrint.unindent()
 
-    commander.onJoystickReading(joystick.get_axis(0), joystick.get_axis(1))
+        if (i == 0):
+            commander.onJoystickReading(joystick.get_axis(0), joystick.get_axis(1))
 
     #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
@@ -154,7 +159,7 @@ while not done:
     pygame.display.flip()
 
     # Limit to 20 frames per second.
-    clock.tick(20)
+    clock.tick(10)
 
 # Close the window and quit.
 # If you forget this line, the program will 'hang'

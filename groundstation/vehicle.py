@@ -6,8 +6,10 @@ class Vehicle:
     def __init__(self, radio: Radio):
         self.radio = radio
 
-    def forward(self):
-        msgFromServer       = '{"motorA": 32767}'
+    def setMotors(self, motorA: float, motorB: float):
+        motorAInt = int(motorA * 90)
+        motorBInt = int(motorB * 90)
+        msgFromServer       = '{"motorA": ' + str(motorAInt) + ',"motorB": ' + str(motorBInt) + '}'
         bytesToSend         = str.encode(msgFromServer)
         self.radio.send(bytesToSend)
 
