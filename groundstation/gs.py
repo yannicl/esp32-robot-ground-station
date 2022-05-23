@@ -11,6 +11,7 @@ WHITE = pygame.Color('white')
 radio = Radio()
 vehicle = Vehicle(radio)
 commander = Commander(vehicle)
+radio.setCommander(commander)
 
 # This is a simple class that will help us print to the screen.
 # It has nothing to do with the joysticks, just outputting the
@@ -56,6 +57,8 @@ pygame.joystick.init()
 # Get ready to print.
 textPrint = TextPrint()
 
+lockForward = False
+
 # -------- Main Program Loop -----------
 while not done:
     #
@@ -72,6 +75,12 @@ while not done:
                 commander.onGearShiftDown()
             if (event.button == 5 or event.button == 7):
                 commander.onGearShiftUp()
+            if (event.button == 2):
+                print("Forward")
+                lockForward = True
+            if (event.button == 1):
+                print("Stop")
+                lockForward = False
         elif event.type == pygame.JOYBUTTONUP:
             print("Joystick button released.")
 
@@ -149,7 +158,14 @@ while not done:
         textPrint.unindent()
 
         if (i == 0):
-            commander.onJoystickReading(joystick.get_axis(0), joystick.get_axis(1))
+            x, y = joystick.get_hat(0)
+            if (x != 0 or y != 0 or lockForward):
+                if lockForward:
+                    y = 1
+                commander.onJoystickReading(x, -1 * y)
+            else:
+                commander.onJoystickReading(joystick.get_axis(0), joystick.get_axis(1))
+
 
     #
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT

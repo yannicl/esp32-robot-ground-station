@@ -1,6 +1,10 @@
 from vehicle import Vehicle
+import time
 
 class Commander:
+
+    PAUSE_COUNTER = 50
+    AFTER_PAUSE_COUNTER = 50
 
     def __init__(self, vehicle: Vehicle):
         self.vehicle = vehicle
@@ -8,6 +12,11 @@ class Commander:
         self.lastl = -200
         self.speedRatio = 5
         self.lastSpeedRatio = 0
+        self.pauseCounter = 0
+        self.afterPauseCounter = 0
+        self.startLapsTime = 0
+        self.lapsCounter = 0
+        self.midLapControl = False
 
     def onDistanceReading(self, distance):
         pass
@@ -26,8 +35,17 @@ class Commander:
 
 
     def onJoystickReading(self, upDownReading: float, leftRightReading: float):
+        if (self.pauseCounter):
+            self.pauseCounter -= 1
+            if (not self.pauseCounter):
+                print("pause ended")
+            return
+        if (self.afterPauseCounter):
+            self.afterPauseCounter -= 1
+            if (not self.afterPauseCounter):
+                print("after pause ended")
 
-# based on https://home.kendra.com/mauser/joystick.html
+        # based on https://home.kendra.com/mauser/joystick.html
 
         x = 100 * upDownReading
         y = -100 * leftRightReading
@@ -41,14 +59,29 @@ class Commander:
             r = 0
             l = 0
 
-        if (self.lastr == r and self.lastl == l and self.speedRatio == self.lastSpeedRatio):
-            pass
-        else:
-            print ('r ' + str(r) + ", l " + str(l))
+        #if (self.lastr == r and self.lastl == l and self.speedRatio == self.lastSpeedRatio):
+        #    pass
+        #else:
+        #    print ('r ' + str(r) + ", l " + str(l))
             
         self.vehicle.setMotors(1 * r / 100 * self.speedRatio / 10, l / 100 * self.speedRatio / 10)
 
         self.lastr = r 
         self.lastl = l
         self.lastSpeedRatio = self.speedRatio
+        
+    def onColorReading(self, color):
+        if (color == "WHITE" or color == "BLACK") and not self.afterPauseCounter:
+            self.pauseCounter = self.PAUSE_COUNTER
+            self.afterPauseCounter = self.AFTER_PAUSE_COUNTER
+            self.vehicle.setMotors(0, 0)
+        if (color == "YELLOW" and self.midLapControl):
+            elapsed_time = time.time() - self.startLapsTime 
+            if (elapsed_time < 60) :
+                print("Laps + " + str(self.lapsCounter + 1) + " in : " + str(elapsed_time) + " s")
+                self.lapsCounter += 1
+            self.startLapsTime = time.time()
+            self.midLapControl = False
+        if (color == "RED"):
+            self.midLapControl = True
         
