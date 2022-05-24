@@ -70,19 +70,22 @@ while not done:
         if event.type == pygame.QUIT: # If user clicked close.
             done = True # Flag that we are done so we exit this loop.
         elif event.type == pygame.JOYBUTTONDOWN:
-            print("Joystick button pressed.")
+            if (event.button == 0):
+                commander.onGearShiftUp()
+                commander.onGearShiftUp()
             if (event.button == 4 or event.button == 6):
                 commander.onGearShiftDown()
             if (event.button == 5 or event.button == 7):
                 commander.onGearShiftUp()
             if (event.button == 2):
-                print("Forward")
                 lockForward = True
             if (event.button == 1):
-                print("Stop")
                 lockForward = False
         elif event.type == pygame.JOYBUTTONUP:
-            print("Joystick button released.")
+            if (event.button == 0):
+                commander.onGearShiftDown()
+                commander.onGearShiftDown()
+            pass
 
     #
     # DRAWING STEP

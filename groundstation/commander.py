@@ -25,25 +25,19 @@ class Commander:
         self.speedRatio += 1
         if (self.speedRatio > 10): 
             self.speedRatio = 10
-        print('gear: ' + str(self.speedRatio))
 
     def onGearShiftDown(self):
         self.speedRatio -= 1
         if (self.speedRatio < 3): 
             self.speedRatio = 3
-        print('gear: ' + str(self.speedRatio))
 
 
     def onJoystickReading(self, upDownReading: float, leftRightReading: float):
         if (self.pauseCounter):
             self.pauseCounter -= 1
-            if (not self.pauseCounter):
-                print("pause ended")
             return
         if (self.afterPauseCounter):
             self.afterPauseCounter -= 1
-            if (not self.afterPauseCounter):
-                print("after pause ended")
 
         # based on https://home.kendra.com/mauser/joystick.html
 
